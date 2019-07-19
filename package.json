@@ -28,7 +28,7 @@
     "lodash": "^4.17.14",
     "nodemailer": "^6.3.0",
     "pdfkit": "^0.10.0",
-    "robotjs": "^0.5.1",
+    "pdfreader": "^1.0.4",
     "speedtest-net": "^1.5.1",
     "wallpaper": "^4.4.1"
   }
