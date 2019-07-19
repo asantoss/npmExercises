@@ -1,0 +1,35 @@
+{
+  "name": "npmexercises",
+  "version": "1.0.0",
+  "description": "Learning about npm DC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asantoss/npmExercises.git"
+  },
+  "keywords": [
+    "Learning",
+    "NPM",
+    "digitalCrafts"
+  ],
+  "author": "Alexander Santos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asantoss/npmExercises/issues"
+  },
+  "homepage": "https://github.com/asantoss/npmExercises#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "cat-facts": "^1.0.2",
+    "download-file": "^0.1.5",
+    "lodash": "^4.17.14",
+    "nodemailer": "^6.3.0",
+    "pdfkit": "^0.10.0",
+    "robotjs": "^0.5.1",
+    "speedtest-net": "^1.5.1",
+    "wallpaper": "^4.4.1"
+  }
+}
