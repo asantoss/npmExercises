@@ -18,7 +18,7 @@ const catFact = function (factsWanted, random, url) {
         try {
             doc.image(`${url}`, 150, 15, { fit: [500, 250] }).moveDown(15)
         } catch{
-            console.log('I pulled a bad image, Sorry')
+            console.log("I pulled a bad image, Sorry it won't happen on your next pdf")
         }
         if (factsWanted) {
             doc.font('Times-Bold')
