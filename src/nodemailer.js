@@ -14,7 +14,7 @@ async function main(arg) {
         service: 'gmail',
         auth: {
             user: 'alexsantosantana71@gmail.com',
-            pass: 'Surf091396'
+            pass: ''
         }
     });
     const mailOptions = {
