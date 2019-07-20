@@ -31,23 +31,18 @@ switch (command) {
                 setTimeout(() => {
                     let fileID = catFact.random
                     catFact.makePdf(commandOpt, fileID, url).then(pdfUrl => {
-                        exec(`echo "Opening PDF!"`, function (err, stdout, stderr) {
-                            if (err) {
-                                // should have err.code here?  
-                            }
-                            switch (process.platform) {
-                                case 'linux': exec(`xdg-open "${process.cwd()}/media/pdfs/${pdfUrl}"`)
-                                    break;
-                                case 'darwin': exec(`open "${process.cwd()}/media/pdfs/${pdfUrl}"`)
-                                    break;
-                                case 'win32': exec(`cd ${process.cwd()}/media/pdfs`, function (err, stdout, stderr) {
-                                    if (err) throw (err)
-                                    exec(`${pdfUrl}`)
-                                })
-                                    break;
-                            }
-                            console.log('Ready!')
-                        });
+                        switch (process.platform) {
+                            case 'linux': exec(`xdg-open "${process.cwd()}/media/pdfs/${pdfUrl}"`)
+                                break;
+                            case 'darwin': exec(`open "${process.cwd()}/media/pdfs/${pdfUrl}"`)
+                                break;
+                            case 'win32': exec(`cd ${process.cwd()}/media/pdfs`, function (err, stdout, stderr) {
+                                if (err) throw (err)
+                                exec(`${pdfUrl}`)
+                            })
+                                break;
+                        }
+                        console.log('Ready!')
                         return url
                     }).then(url => {
                         fs.unlink(url, (err) => {
