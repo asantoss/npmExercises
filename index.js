@@ -3,7 +3,6 @@ const lodash = require('lodash');
 const fs = require('fs')
 const wallpaper = require('./src/wallpaper');
 var sys = require('util');
-
 var exec = require('child_process').exec;
 module.exports = exec
 
@@ -32,23 +31,27 @@ switch (command) {
                 wallpaper.downloadPic('cat', commandOpt).then(url => {
                     setTimeout(() => {
                         let fileID = catFact.random
-                            //Our make pdf function takes the url of the image we download and pushes it into the file.
+                        //Our make pdf function takes the url of the image we download and pushes it into the file.
                         catFact.makePdf(commandOpt, fileID, url).then(pdfUrl => {
                             //This switch statement detects your current os and determines how to best open the file so you can see the kitty!
                             var path2file = `${process.cwd()}/media/pdfs/${pdfUrl}`
                             switch (process.platform) {
-                                case 'linux':
-                                    exec(`xdg-open "${path2file}"`)
+                                case 'linux': {
+                                    console.log(process.platform)
+                                    exec(`xdg-open "${process.cwd()}/media/pdfs/${pdfUrl}"`)
                                     break;
-                                case 'darwin':
+                                }
+                                case 'darwin': {
                                     exec(`open "${path2file}"`)
                                     break;
-                                case 'win32':
-                                    exec(`${path2file}`, function(err, stdout, stderr) {
+                                }
+                                case 'win32': {
+                                    exec(`${path2file}`, function (err, stdout, stderr) {
                                         if (err) throw (err)
                                         exec(`${pdfUrl}`)
                                     })
                                     break;
+                                }
                             }
                             console.log('Ready!')
                             return url
