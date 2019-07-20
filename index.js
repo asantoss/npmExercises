@@ -27,10 +27,13 @@ const commandOpt = process.argv[3];
 switch (command) {
     case 'catfact': {
         if (commandOpt != NaN) {
+            //We run this function to download a picture of a kitty for our pdf.
             wallpaper.downloadPic('cat', commandOpt).then(url => {
                 setTimeout(() => {
                     let fileID = catFact.random
+                    //Our make pdf function takes the url of the image we download and pushes it into the file.
                     catFact.makePdf(commandOpt, fileID, url).then(pdfUrl => {
+                        //This switch statement detects your current os and determines how to best open the file so you can see the kitty!
                         switch (process.platform) {
                             case 'linux': exec(`xdg-open "${process.cwd()}/media/pdfs/${pdfUrl}"`)
                                 break;
@@ -57,6 +60,7 @@ switch (command) {
     }
         break;
     case 'wallpaper': {
+        //We run this file with comman opt to change the wall paper on an interval in seconds
         if (commandOpt) {
             wallpaper.setWallpaper(commandOpt)
         }
@@ -70,8 +74,4 @@ switch (command) {
         wallpaper #s
         time of each wallpaper change the default is once`)
     }
-}
-if (command === 'download') {
-    wallpaper.downloadPic('cat')
-
 }
