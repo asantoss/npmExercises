@@ -1,7 +1,9 @@
 const wallpaper = require('wallpaper');
 const downloadFile = require('download-file');
 const axios = require('axios');
-const lodash = require('lodash')
+const lodash = require('lodash');
+var exec = require('child_process').exec;
+const catFact = require('./catfacts.js');
 
 var options = {
     directory: './media/images',
@@ -20,38 +22,41 @@ const getMeDoggos = function (time) {
     }
 }
 
-const downloadPic = function (animal) {
-    var url;
-    let fileID = lodash.random(1, 255)
-    switch (animal) {
-        case 'dog':
-            url = `./media/images/dogPic.jpg`
-            axios.get('https://dog.ceo/api/breeds/image/random')
-                .then(res => {
-                    downloadFile(res.data.message, options, function (err) {
-                        if (err) throw err;
+const downloadPic = function (animal, commandOpt) {
+    return new Promise(resolve => {
+        var url;
+        let fileID = lodash.random(1, 255)
+        switch (animal) {
+            case 'dog':
+                url = `${process.cwd()}/media/images/dogPic.jpg`
+                axios.get('https://dog.ceo/api/breeds/image/random')
+                    .then(res => {
+                        downloadFile(res.data.message, options, function (err) {
+                            if (err) throw err;
+                            return resolve(url)
+                        })
+                    })
+                break;
+            case 'cat':
+                url = `${process.cwd()}/media/images/cat${fileID}.jpg`;
+                axios.get('https://api.thecatapi.com/v1/images/search?format=json').then(res => {
+                    downloadFile(res.data[0].url, { directory: `${process.cwd()}/media/images`, filename: `cat${fileID}.jpg` }, function (err, data) {
+                        if (err) {
+                            throw err
+                        }
+                        resolve(url)
                     })
                 })
-            break;
-        case 'cat':
-            url = `./media/images/cat${fileID}`
-            downloadFile('https://cataas.com/cat/cute', { directory: './media/images', filename: `cat${fileID}.jpg` }, function (err) {
-                if (err) throw err;
-            })
-            // axios.get('https://cataas.com/cat/cute')
-            //     .then(res => {
-            //         console.log(res)
-            //         // downloadFile(res.data.message, options, function (err) {
+                break;
+        }
+    }, reject => {
+        reject(console.error)
+    })
+}
 
-            //         //     if (err) throw err;
-            //         // })
-            //     })
-            break;
+const makePDF =
+
+    module.exports = {
+        'setWallpaper': getMeDoggos,
+        'downloadPic': downloadPic
     }
-    return url
-}
-
-module.exports = {
-    'setWallpaper': getMeDoggos,
-    'downloadPic': downloadPic
-}

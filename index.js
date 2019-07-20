@@ -1,24 +1,62 @@
 const catFact = require('./src/catfacts.js');
 const lodash = require('lodash');
+const fs = require('fs')
 const wallpaper = require('./src/wallpaper');
-var sys = require('util')
+var sys = require('util');
+
 var exec = require('child_process').exec;
 module.exports = exec
 
+
+
+fs.readdir(`${process.cwd()}/media/pdfs`, (err, files) => {
+    if (files.length > 5) {
+        let i = 0
+        files.forEach(file => {
+            i++
+            fs.unlink(`${process.cwd()}/media/pdfs/${file}`, err => {
+                if (err) { throw err }
+            })
+        })
+        console.log('Deleted ' + i + ' files')
+    }
+})
 
 const command = process.argv[2];
 const commandOpt = process.argv[3];
 switch (command) {
     case 'catfact': {
-        fileID = catFact.random
         if (commandOpt != NaN) {
-            catFact.makePdf(commandOpt, fileID).then(pdfUrl => {
-                exec(`echo "Opening PDF!"`, function (err, stdout, stderr) {
-                    if (err) {
-                        // should have err.code here?  
-                    }
-                    exec(`chromium "${process.cwd()}/media/pdfs/${pdfUrl}"`)
-                });
+            wallpaper.downloadPic('cat', commandOpt).then(url => {
+                setTimeout(() => {
+                    let fileID = catFact.random
+                    catFact.makePdf(commandOpt, fileID, url).then(pdfUrl => {
+                        exec(`echo "Opening PDF!"`, function (err, stdout, stderr) {
+                            if (err) {
+                                // should have err.code here?  
+                            }
+                            switch (process.platform) {
+                                case 'linux': exec(`xdg-open "${process.cwd()}/media/pdfs/${pdfUrl}"`)
+                                    break;
+                                case 'darwin': exec(`open "${process.cwd()}/media/pdfs/${pdfUrl}"`)
+                                    break;
+                                case 'win32': exec(`cd ${process.cwd()}/media/pdfs`, function (err, stdout, stderr) {
+                                    if (err) throw (err)
+                                    exec(`${pdfUrl}`)
+                                })
+                                    break;
+                            }
+                            console.log('Ready!')
+                        });
+                        return url
+                    }).then(url => {
+                        fs.unlink(url, (err) => {
+                            if (err) throw err;
+                        });
+                    })
+                }, 2000)
+            }).catch(err => {
+                console.log(`Couldn't make it for ya chief.`)
             })
         }
     }
@@ -29,21 +67,16 @@ switch (command) {
         }
         wallpaper.setWallpaper()
     }
+        break;
+    default: {
+        console.log(`You could run any of these commands \n
+        catfact #s
+        number of facts desired the default is 1 \n
+        wallpaper #s
+        time of each wallpaper change the default is once`)
+    }
 }
 if (command === 'download') {
     wallpaper.downloadPic('cat')
 
 }
-
-
-
-// dir = exec("ls -la", function (err, stdout, stderr) {
-//     if (err) {
-//         // should have err.code here?  
-//     }
-//     console.log(stdout);
-// });
-
-// dir.on('exit', function (code) {
-//     // exit code is code
-// });

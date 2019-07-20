@@ -1,22 +1,29 @@
 const PDFkit = require('pdfkit');
 const catFacts = require('cat-facts');
 const lodash = require('lodash');
+const downloadPic = require('./wallpaper').downloadPic
 const kittyAPIKey = 'f8121cfd-3880-4896-abce-ab2bcfd73068';
 const axios = require('axios');
+
 const fs = require('fs');
 const doc = new PDFkit();
 var random = lodash.random(0, 255)
 
-const catFact = function (factsWanted, random) {
+const catFact = function (factsWanted, random, url) {
     let stream = fs.WriteStream;
     let randomFact = catFacts.random()
     let catPDFUrl = `catFacts${random}.pdf`
+    doc.pipe(fs.createWriteStream('./media/pdfs/' + catPDFUrl));
     return new Promise(function (resolve, reject) {
-        doc.pipe(fs.createWriteStream('./media/pdfs/' + catPDFUrl));
-        doc.fontSize(25)
+        try {
+            doc.image(`${url}`, 150, 15, { fit: [500, 250] }).moveDown(15)
+        } catch{
+            console.log('I pulled a bad image, Sorry')
+        }
         if (factsWanted) {
             doc.font('Times-Bold')
-                .text(`These are just ${factsWanted} facts about Kitties!`), {
+                .fontSize(25)
+                .text(`These are ${factsWanted} facts about kitties!`), 100, 80, {
                     width: 410,
                     align: 'center',
                     underline: true,
@@ -50,9 +57,11 @@ const catFact = function (factsWanted, random) {
         }
         doc.end();
         if (stream.Readable) {
-            return resolve(catPDFUrl)
-        } else {
-            return reject(console.error)
+            try {
+                return resolve(catPDFUrl)
+            } catch{
+                return reject(console.log("For some reason I couldn't make this one please run it again!"))
+            }
         }
     });
 }
