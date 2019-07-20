@@ -1,35 +1,41 @@
-const catFact = require('./src/catfacts.js')
-const lodash = require('lodash')
+const catFact = require('./src/catfacts.js');
+const lodash = require('lodash');
+const wallpaper = require('./src/wallpaper');
 var sys = require('util')
 var exec = require('child_process').exec;
+module.exports = exec
 
 
 const command = process.argv[2];
 const commandOpt = process.argv[3];
-
-if (command === 'catfact') {
-    fileID = catFact.random
-    if (commandOpt != NaN) {
-        catFact.makePdf(commandOpt, fileID).then(() => {
-            console.log('Wooot hope this works')
-            exec(`echo ./media/pdfs/catFacts${fileID}`, function (err, stdout, stderr) {
-                if (err) {
-                    // should have err.code here?  
-                }
-                console.log(stdout);
-            });
-        })
-    } else {
-        catFact.then(() => {
-            exec(`xdg-open ./media/pdfs/catFacts${fileID}`, function (err, stdout, stderr) {
-                if (err) {
-                    // should have err.code here?  
-                }
-                console.log('launched');
-            });
-        })
+switch (command) {
+    case 'catfact': {
+        fileID = catFact.random
+        if (commandOpt != NaN) {
+            catFact.makePdf(commandOpt, fileID).then(pdfUrl => {
+                exec(`echo "Opening PDF!"`, function (err, stdout, stderr) {
+                    if (err) {
+                        // should have err.code here?  
+                    }
+                    exec(`chromium "${process.cwd()}/media/pdfs/${pdfUrl}"`)
+                });
+            })
+        }
+    }
+        break;
+    case 'wallpaper': {
+        if (commandOpt) {
+            wallpaper.setWallpaper(commandOpt)
+        }
+        wallpaper.setWallpaper()
     }
 }
+if (command === 'download') {
+    wallpaper.downloadPic('cat')
+
+}
+
+
 
 // dir = exec("ls -la", function (err, stdout, stderr) {
 //     if (err) {
