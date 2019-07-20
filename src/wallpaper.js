@@ -12,13 +12,17 @@ var options = {
 
 const getMeDoggos = function (time) {
     if (time) {
-        time = time * 1000;
+        time = parseInt(time) * 1000;
         setInterval(() => {
-            wallpaper.set(downloadPic('dog').toString())
+            downloadPic('dog').then(url => {
+                wallpaper.set(url.toString())
+            })
         }, time)
         console.log('Giving you a doggo every ' + time / 1000 + 's.')
     } else {
-        wallpaper.set(downloadPic('dog'))
+        downloadPic('dog').then(url => {
+            wallpaper.set(url.toString())
+        })
     }
 }
 
@@ -33,7 +37,7 @@ const downloadPic = function (animal, commandOpt) {
                     .then(res => {
                         downloadFile(res.data.message, options, function (err) {
                             if (err) throw err;
-                            return resolve(url)
+                            resolve(url)
                         })
                     })
                 break;
